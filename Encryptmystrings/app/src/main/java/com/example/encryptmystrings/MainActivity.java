@@ -1,5 +1,7 @@
 package com.example.encryptmystrings;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,11 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.example.encryptmystrings.firebase.FirebaseMessagingHelper;
 import com.example.encryptmystrings.firebase.FirebaseWorker;
 import com.example.encryptmystrings.ui.main.MainFragment;
 import com.example.encryptmystrings.ui.main.MainModelView;
@@ -22,8 +20,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,17 +42,16 @@ public class MainActivity extends AppCompatActivity {
                             Log.w("TAG", "getInstanceId failed", task.getException());
                             return;
                         }
-                        // Get new Instance ID token
+                        // save new Instance ID token
                         String token = task.getResult().getToken();
+                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(getString(R.string.fcm_token), token);
+                        editor.commit();
 
-                        // Log and toast
-//                        String msg = getString(R.string.msg_token_fmt, token);
                         Log.d("TAG", token);
-//                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        FirebaseMessagingHelper.subscribeToEncryptionTopic(this);
     }
 
     @Override
@@ -66,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
         // Passing params
         Data.Builder data = new Data.Builder();
         data.putString(FirebaseWorker.DECRYPTED_STRING, modelView.getInputText().getValue());
+        data.putString(FirebaseWorker.REGISTRATION_TOKEN, getPreferences(Context.MODE_PRIVATE).getString(getString(R.string.fcm_token), ""));
+        data.putString(FirebaseWorker.MESSAGE_TITLE, getString(R.string.message_title));
+        data.putString(FirebaseWorker.MESSAGE_BODY, getString(R.string.message_body));
+
 
         //create a workManager to operate on the background and set it's delay to 15 seconds
         WorkManager workManager = WorkManager.getInstance(this);

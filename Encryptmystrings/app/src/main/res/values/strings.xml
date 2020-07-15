@@ -6,4 +6,7 @@
     <string name="push_to_encrypt">Push to encrypt</string>
     <string name="topic_registration_success">topic registration succeeded</string>
     <string name="topic_registration_failure">topic registration failed</string>
+    <string name="fcm_token">fcm_token</string>
+    <string name="message_title">Ping message</string>
+    <string name="message_body">Your text was encrypted push to decrypt</string>
 </resources>
