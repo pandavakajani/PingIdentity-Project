@@ -3,14 +3,12 @@ package com.example.encryptmystrings.ui.main;
 import android.view.View;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.NavAction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.example.encryptmystrings.R;
-import com.example.encryptmystrings.firebase.FirebaseMessagingServiceImpl;
+import com.android.volley.RequestQueue;
+import com.example.encryptmystrings.firebase.FirebaseMessagingHelper;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainModelView extends ViewModel {
@@ -77,9 +75,5 @@ public class MainModelView extends ViewModel {
             MainFragmentDirections.ActionMainFragmentToDecryptedFragment action = MainFragmentDirections.actionMainFragmentToDecryptedFragment().setDecryptedText(getInputText().getValue());
             navController.navigate(action);
         }
-    }
-
-    public void sendMessage(){
-        FirebaseMessaging.getInstance().
     }
 }
