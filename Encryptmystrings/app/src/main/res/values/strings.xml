@@ -4,4 +4,6 @@
     <string name="use_biometric_authentication">Use biometric authentication</string>
     <string name="operation_status">Operation Status</string>
     <string name="push_to_encrypt">Push to encrypt</string>
+    <string name="topic_registration_success">topic registration succeeded</string>
+    <string name="topic_registration_failure">topic registration failed</string>
 </resources>

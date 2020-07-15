@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "90322447222",
+    "firebase_url": "https://ping-encryption.firebaseio.com",
+    "project_id": "ping-encryption",
+    "storage_bucket": "ping-encryption.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90322447222:android:f4363831cc866ce61ae857",
+        "android_client_info": {
+          "package_name": "com.example.encryptmystrings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90322447222-n75j1he664o3t49l0dc53m9iq2nn8uad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCX2y6xoOPDHCyNBb-GuNJkvQxw9odQnz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90322447222-n75j1he664o3t49l0dc53m9iq2nn8uad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
