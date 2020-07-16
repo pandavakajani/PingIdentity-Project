@@ -1,5 +1,6 @@
 package com.example.encryptmystrings.firebase;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,18 +14,23 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.room.util.StringUtil;
 
 import com.example.encryptmystrings.MainActivity;
 import com.example.encryptmystrings.R;
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
 public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMessagingServiceImpl";
-
-
+    private static final String CHANNEL_ID = "PING_FIREBASE_CHANEL";
+    private static int notification_id = 0;
 
     public FirebaseMessagingServiceImpl() {
     }
@@ -56,15 +62,59 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ\
         Log.d(TAG, "From: " + remoteMessage.getFrom());
+        Map<String,String> data = remoteMessage.getData();
 
+        String body = data.get(FirebaseMessagingHelper.key_body);
+        String title = data.get(FirebaseMessagingHelper.key_title);
+        String encrypted = data.get(FirebaseMessagingHelper.key_encrypted);
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+        //verify the response payload
+        if(isNotEmpty(encrypted) && isNotEmpty(title) && isNotEmpty(body)){
+            notifyApp(title, body, encrypted);
         }
+    }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+    private boolean isNotEmpty(String str){
+        return str!=null && !str.isEmpty();
+    }
+
+    /**
+     * Notify the app about the new push message and add a notification with data
+     */
+    private void notifyApp(String title, String body, String encrypted){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.common_full_open_on_phone)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(createPendingIntent(encrypted))
+                .setAutoCancel(true);
+        createNotificationChannel();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(notification_id++, builder.build());
+    }
+
+    private PendingIntent createPendingIntent(String encrypted){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(FirebaseMessagingHelper.key_encrypted, encrypted);
+        return PendingIntent.getActivity(this, 0, intent, 0);
+    }
+
+
+    private void createNotificationChannel() {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
     }
 
     /**

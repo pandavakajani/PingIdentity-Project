@@ -16,20 +16,33 @@ import java.util.Map;
 
 public class FirebaseMessagingHelper {
     private static final String TAG = "FirebaseMessagingHelper";
-    private static final String serverKey = "AAAAFQejK3Y:APA91bFfWZFSaeTiFUlLrJ4Q-9TBCdQFbf8f4Xi-EuHN2UtuYgwoFlrfSnGPE5Rq0GVD71-aJpNy_TgY7AzGXxLZ5bkjC6xp-Tt9Bdvvjmj0dzyaP-tkKiPNCStKwjttCtbozKajCyPk";
+    private static final String serverKey = "key=AAAAFQejK3Y:APA91bFfWZFSaeTiFUlLrJ4Q-9TBCdQFbf8f4Xi-EuHN2UtuYgwoFlrfSnGPE5Rq0GVD71-aJpNy_TgY7AzGXxLZ5bkjC6xp-Tt9Bdvvjmj0dzyaP-tkKiPNCStKwjttCtbozKajCyPk";
     private static final String path = "https://fcm.googleapis.com/fcm/send";
     private static final String contentType = "application/json";
+    private static final String HeaderContentType = "Content-Type";
+    private static final String HeaderAuthorization = "Authorization";
+
+    public static final String key_priority = "priority";
+    public static final String key_data = "data";
+    public static final String key_to = "to";
+    public static final String key_encrypted = "encrypted";
+    public static final String key_body = "body";
+    public static final String key_title = "title";
+    public static final String PRIORITY_NORMAL = "normal";
+
+
 
     public static JSONObject generateDecryptionNotification(String title, String body, String encryptedData, String registrationKey){
         JSONObject message = new JSONObject();
         JSONObject data = new JSONObject();
 
         try {
-            data.put("title", title);
-            data.put("body", body);
-            data.put("encrypted", encryptedData);
-            message.put("to", registrationKey);
-            message.put("data", data);
+            data.put(key_title, title);
+            data.put(key_body, body);
+            data.put(key_encrypted, encryptedData);
+            message.put(key_to, registrationKey);
+            message.put(key_data, data);
+            message.put(key_priority, PRIORITY_NORMAL);
         } catch (JSONException e) {
             message=null;
             Log.e(TAG, "generateNotification: failed to construct json message");
@@ -60,27 +73,12 @@ public class FirebaseMessagingHelper {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError{
                     Map<String, String> header = new HashMap<>();
-                    header.put("Content-Type", contentType);
-                    header.put("Authorization", "key=" + serverKey);
+                    header.put(HeaderContentType, contentType);
+                    header.put(HeaderAuthorization, serverKey);
                     return header;
                 }
             };
             queue.add(request);
         }
     }
-
-//    public static void subscribeToEncryptionTopic(final Context ctx){
-//        FirebaseMessaging.getInstance().subscribeToTopic(decryptionTopic)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        String msg = ctx.getString(R.string.topic_registration_success);
-//                        if (!task.isSuccessful()) {
-//                            msg = ctx.getString(R.string.topic_registration_failure);
-//                        }
-//                        Log.d(TAG, msg);
-//                        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
 }

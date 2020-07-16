@@ -69,8 +69,16 @@ public class MainModelView extends ViewModel {
     // bind method was done in the layout (main_fragment)
     public void onButtonSendClicked(View v){
         //1. encrypt
-        //2. create scheduled job for 15 sec
         NavController navController = Navigation.findNavController(v);
+        navigateToDecryptedFragment(navController);
+
+//        if(navController!=null){
+//            MainFragmentDirections.ActionMainFragmentToDecryptedFragment action = MainFragmentDirections.actionMainFragmentToDecryptedFragment().setDecryptedText(getInputText().getValue());
+//            navController.navigate(action);
+//        }
+    }
+
+    public void navigateToDecryptedFragment(NavController navController){
         if(navController!=null){
             MainFragmentDirections.ActionMainFragmentToDecryptedFragment action = MainFragmentDirections.actionMainFragmentToDecryptedFragment().setDecryptedText(getInputText().getValue());
             navController.navigate(action);

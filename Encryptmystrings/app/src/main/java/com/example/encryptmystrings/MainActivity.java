@@ -9,10 +9,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import com.android.volley.RequestQueue;
+import com.example.encryptmystrings.firebase.FirebaseMessagingHelper;
 import com.example.encryptmystrings.firebase.FirebaseWorker;
 import com.example.encryptmystrings.ui.main.MainFragment;
 import com.example.encryptmystrings.ui.main.MainModelView;
@@ -52,6 +55,21 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("TAG", token);
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //checking if intent was provided to show the decrypted string
+        if(getIntent().hasExtra(FirebaseMessagingHelper.key_encrypted)){
+            String decrypted = getIntent().getStringExtra(FirebaseMessagingHelper.key_encrypted);
+            if(decrypted!=null){
+                //go directly to the second fragment and show the decrypted string there
+                modelView.updateInputText(decrypted);
+                NavController navController = Navigation.findNavController(this,R.id.myNavHostFragment);
+                modelView.navigateToDecryptedFragment(navController);
+            }
+        }
     }
 
     @Override

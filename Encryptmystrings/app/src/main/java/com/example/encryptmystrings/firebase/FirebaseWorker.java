@@ -22,8 +22,8 @@ public class FirebaseWorker extends Worker {
         Log.d("FirebaseWorker", "doWork for Sync");
         String decryptedString = getInputData().getString(DECRYPTED_STRING);
         String registrationToken = getInputData().getString(REGISTRATION_TOKEN);
-        String body = getInputData().getString(REGISTRATION_TOKEN);
-        String title = getInputData().getString(REGISTRATION_TOKEN);
+        String body = getInputData().getString(MESSAGE_BODY);
+        String title = getInputData().getString(MESSAGE_TITLE);
         FirebaseMessagingHelper.sendNotification(title, body, decryptedString, registrationToken, getApplicationContext());
         return Worker.Result.success();
     }

@@ -9,4 +9,6 @@
     <string name="fcm_token">fcm_token</string>
     <string name="message_title">Ping message</string>
     <string name="message_body">Your text was encrypted push to decrypt</string>
+    <string name="channel_name">ping_encrypted_text</string>
+    <string name="channel_description">description of the chanel</string>
 </resources>
