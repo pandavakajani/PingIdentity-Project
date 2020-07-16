@@ -13,9 +13,12 @@ public class MainModel {
         return instance;
     }
 
+    //data to support the MainFragment
     private MutableLiveData<Boolean> toggleEncryption = new MutableLiveData<>(false);
     private MutableLiveData<String> operationStatus = new MutableLiveData<>("NOT STARTED");
     private MutableLiveData<String> inputText = new MutableLiveData<>("");
+    //data to support the DecryptedFragment
+    private MutableLiveData<String> textView = new MutableLiveData<>("");
 
     public LiveData<Boolean> getToggleEncryption(){
         return toggleEncryption;
@@ -29,6 +32,11 @@ public class MainModel {
         return inputText;
     }
 
+    public LiveData<String> getTextView(){
+        return textView;
+    }
+
+
     public void setToggleEncryption(Boolean toggleEncryption) {
         this.toggleEncryption.postValue(toggleEncryption);
     }
@@ -39,5 +47,9 @@ public class MainModel {
 
     public void setInputText(String inputText) {
         this.inputText.postValue(inputText);
+    }
+
+    public void setTextView(String text) {
+        this.textView.postValue(text);
     }
 }

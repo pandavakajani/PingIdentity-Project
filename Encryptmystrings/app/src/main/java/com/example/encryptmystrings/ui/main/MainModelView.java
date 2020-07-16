@@ -17,6 +17,7 @@ public class MainModelView extends ViewModel {
     private LiveData<Boolean> toggleEncryption;
     private LiveData<String> operationStatus;
     private LiveData<String> inputText;
+    private LiveData<String> textView;
 
     private MainModel model;
 
@@ -38,6 +39,10 @@ public class MainModelView extends ViewModel {
         if(inputText == null){
             inputText = model.getInputText();
         }
+
+        if(textView == null){
+            textView = model.getTextView();
+        }
     }
 
     /* the liveDate getter methods return LiveData in order to prevent writing
@@ -55,8 +60,16 @@ public class MainModelView extends ViewModel {
         return inputText;
     }
 
+    public LiveData<String> getTextView(){
+        return textView;
+    }
+
     public void updateInputText(String inputText){
         model.setInputText(inputText);
+    }
+
+    public void updateTextView(String text){
+        model.setTextView(text);
     }
 
     // bind method was done in the layout (main_fragment)
