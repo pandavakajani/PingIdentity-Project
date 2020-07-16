@@ -1,13 +1,24 @@
 package com.example.encryptmystrings.ui.main;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+
+import com.example.encryptmystrings.R;
+import com.example.encryptmystrings.firebase.FirebaseMessagingHelper;
+import com.example.encryptmystrings.firebase.FirebaseWorker;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainModelView extends ViewModel {
+    private static final long DELAY = 15;
+    public static final String PREFS = "modelviewPrefs";
 
     //declaration of members
     private LiveData<Boolean> toggleEncryption;
@@ -17,6 +28,7 @@ public class MainModelView extends ViewModel {
     private LiveData<Boolean> registerPushMessage;
 
     private MainModel model;
+    private OneTimeWorkRequest task;
 
     //init our members
     public void init(){
@@ -85,11 +97,31 @@ public class MainModelView extends ViewModel {
         model.setRegisterPushMessage(registerToPush);
     }
 
+    public OneTimeWorkRequest getTask() {
+        return task;
+    }
+
     // bind method was done in the layout (main_fragment)
     public void onEncryptionToggled(){
         boolean isOn = toggleEncryption.getValue();
         model.setOperationStatus("Toggle button is now turned " + (isOn==false? "ON" : "OFF"));
         model.setToggleEncryption(!toggleEncryption.getValue());
+    }
+
+    public void createTask(String token, String body, String title){
+        // Passing params
+        Data.Builder data = new Data.Builder();
+        data.putString(FirebaseWorker.DECRYPTED_STRING, inputText.getValue());
+        data.putString(FirebaseWorker.REGISTRATION_TOKEN, token);
+        data.putString(FirebaseWorker.MESSAGE_TITLE, title);
+        data.putString(FirebaseWorker.MESSAGE_BODY, body);
+        data.putString(FirebaseWorker.BIOMETRIC, toggleEncryption.getValue() ? FirebaseMessagingHelper.USE_BIOMETRIC_TRUE : FirebaseMessagingHelper.USE_BIOMETRIC_FALSE);
+
+        task = new OneTimeWorkRequest.Builder(FirebaseWorker.class)
+                .setInputData(data.build())
+                .setInitialDelay(DELAY, TimeUnit.SECONDS)
+                .build();
+
     }
 
     // bind method was done in the layout (main_fragment)
@@ -98,6 +130,14 @@ public class MainModelView extends ViewModel {
 //        NavController navController = Navigation.findNavController(v);
 //        navigateToDecryptedFragment(navController);
         //register to push when app goes to background
+        SharedPreferences prefs = v.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if(prefs==null){
+            return;
+        }
+        String token = prefs.getString(v.getContext().getString(R.string.fcm_token),"");
+        String title = v.getContext().getString(R.string.message_title);
+        String body = v.getContext().getString(R.string.message_body);
+        createTask(token, body, title);
         updateRegistrationToPush(true);
     }
 
