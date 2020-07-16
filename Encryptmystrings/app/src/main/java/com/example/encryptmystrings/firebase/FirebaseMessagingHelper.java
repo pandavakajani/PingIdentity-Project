@@ -26,13 +26,16 @@ public class FirebaseMessagingHelper {
     public static final String key_data = "data";
     public static final String key_to = "to";
     public static final String key_encrypted = "encrypted";
+    public static final String key_should_use_biometric = "biometric";
     public static final String key_body = "body";
     public static final String key_title = "title";
     public static final String PRIORITY_NORMAL = "normal";
+    public static final String USE_BIOMETRIC_TRUE = "true";
+    public static final String USE_BIOMETRIC_FALSE = "false";
 
 
 
-    public static JSONObject generateDecryptionNotification(String title, String body, String encryptedData, String registrationKey){
+    public static JSONObject generateDecryptionNotification(String title, String body, String encryptedData, String useBiometric, String registrationKey){
         JSONObject message = new JSONObject();
         JSONObject data = new JSONObject();
 
@@ -40,6 +43,7 @@ public class FirebaseMessagingHelper {
             data.put(key_title, title);
             data.put(key_body, body);
             data.put(key_encrypted, encryptedData);
+            data.put(key_should_use_biometric, useBiometric);
             message.put(key_to, registrationKey);
             message.put(key_data, data);
             message.put(key_priority, PRIORITY_NORMAL);
@@ -50,8 +54,8 @@ public class FirebaseMessagingHelper {
         return message;
     }
 
-    public static void sendNotification(String title, String body, String encryptedData, String registrationKey, Context ctx){
-        JSONObject message = generateDecryptionNotification(title, body, encryptedData, registrationKey);
+    public static void sendNotification(String title, String body, String encryptedData, String useBiometric, String registrationKey, Context ctx){
+        JSONObject message = generateDecryptionNotification(title, body, encryptedData, useBiometric, registrationKey);
         RequestQueue queue = Volley.newRequestQueue(ctx);
 
         if(message!=null){

@@ -11,6 +11,7 @@ public class FirebaseWorker extends Worker {
     public static final String DECRYPTED_STRING = "decrypted_queue";
     public static final String MESSAGE_TITLE = "message_title";
     public static final String MESSAGE_BODY = "message_body";
+    public static final String BIOMETRIC = "biometric";
 
     public FirebaseWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -24,7 +25,8 @@ public class FirebaseWorker extends Worker {
         String registrationToken = getInputData().getString(REGISTRATION_TOKEN);
         String body = getInputData().getString(MESSAGE_BODY);
         String title = getInputData().getString(MESSAGE_TITLE);
-        FirebaseMessagingHelper.sendNotification(title, body, decryptedString, registrationToken, getApplicationContext());
+        String useBiometric = getInputData().getString(BIOMETRIC);
+        FirebaseMessagingHelper.sendNotification(title, body, decryptedString, useBiometric, registrationToken, getApplicationContext());
         return Worker.Result.success();
     }
 }

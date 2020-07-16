@@ -1,5 +1,6 @@
 package com.example.encryptmystrings.ui.main;
 
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,6 +32,9 @@ public class MainFragment extends Fragment {
 
     //init the liveData observers
     private void initViews(MainFragmentBinding binding) {
+            SwitchCompat toggle = binding.getRoot().findViewById(R.id.use_biometric_switch);
+        toggle.setChecked(modelView.getToggleEncryption().getValue());
+
         EditText input = binding.getRoot().findViewById(R.id.edit_text_input);
         input.addTextChangedListener(new TextWatcher() {
             @Override

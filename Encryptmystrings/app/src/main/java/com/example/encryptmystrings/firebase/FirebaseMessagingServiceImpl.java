@@ -67,10 +67,11 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
         String body = data.get(FirebaseMessagingHelper.key_body);
         String title = data.get(FirebaseMessagingHelper.key_title);
         String encrypted = data.get(FirebaseMessagingHelper.key_encrypted);
+        String useBiometric = data.get(FirebaseMessagingHelper.key_should_use_biometric);
 
         //verify the response payload
-        if(isNotEmpty(encrypted) && isNotEmpty(title) && isNotEmpty(body)){
-            notifyApp(title, body, encrypted);
+        if(isNotEmpty(encrypted) && isNotEmpty(title) && isNotEmpty(body) && isNotEmpty(useBiometric)){
+            notifyApp(title, body, encrypted, useBiometric);
         }
     }
 
@@ -81,13 +82,13 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
     /**
      * Notify the app about the new push message and add a notification with data
      */
-    private void notifyApp(String title, String body, String encrypted){
+    private void notifyApp(String title, String body, String encrypted, String useBiometric){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.common_full_open_on_phone)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(createPendingIntent(encrypted))
+                .setContentIntent(createPendingIntent(encrypted, useBiometric))
                 .setAutoCancel(true);
         createNotificationChannel();
 
@@ -97,11 +98,12 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
         notificationManager.notify(notification_id++, builder.build());
     }
 
-    private PendingIntent createPendingIntent(String encrypted){
+    private PendingIntent createPendingIntent(String encrypted, String useBiometric){
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(FirebaseMessagingHelper.key_encrypted, encrypted);
-        return PendingIntent.getActivity(this, 0, intent, 0);
+        intent.putExtra(FirebaseMessagingHelper.key_should_use_biometric, useBiometric);
+        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 
@@ -133,13 +135,6 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
     }
 
     /**
-     * Handle time allotted to BroadcastReceivers.
-     */
-    private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
-    }
-
-    /**
      * Persist token to third-party servers.
      *
      * Modify this method to associate the user's FCM InstanceID token with any server-side account
@@ -151,38 +146,4 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
         // TODO: Implement this method to send token to your app server.
     }
 
-//    /**
-//     * Create and show a simple notification containing the received FCM message.
-//     *
-//     * @param messageBody FCM message body received.
-//     */
-//    private void sendNotification(String messageBody, String title) {
-//        Intent intent = new Intent(this, MainActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-//                PendingIntent.FLAG_ONE_SHOT);
-//
-//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(this, "channelId")
-//                        .setSmallIcon(R.drawable.common_google_signin_btn_icon_light)
-//                        .setContentTitle(title)
-//                        .setContentText(messageBody)
-//                        .setAutoCancel(true)
-//                        .setSound(defaultSoundUri)
-//                        .setContentIntent(pendingIntent);
-//
-//        NotificationManager notificationManager;
-//        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        // Since android Oreo notification channel is needed.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            NotificationChannel channel = new NotificationChannel("channelId",
-//                    "Channel human readable title",
-//                    NotificationManager.IMPORTANCE_DEFAULT);
-//            notificationManager.createNotificationChannel(channel);
-//        }
-//
-//        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
-//    }
 }

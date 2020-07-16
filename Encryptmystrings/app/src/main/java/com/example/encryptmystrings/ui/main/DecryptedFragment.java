@@ -1,6 +1,7 @@
 package com.example.encryptmystrings.ui.main;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.encryptmystrings.R;
 import com.example.encryptmystrings.biometric.BiometricHelper;
 import com.example.encryptmystrings.databinding.DecrypedLayoutBindingImpl;
+
+import java.util.HashMap;
 
 
 public class DecryptedFragment extends Fragment implements BiometricHelper.BiometricAuthenticationResponseListener{
@@ -48,7 +51,14 @@ public class DecryptedFragment extends Fragment implements BiometricHelper.Biome
 
     private void goThroughBiometric(){
         if(BiometricHelper.canUseBiometricAuthentication(getContext())){
-            BiometricHelper.showBiometricPrompt(getContext(), getActivity(), this);
+            Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    BiometricHelper.showBiometricPrompt(getContext(), getActivity(), DecryptedFragment.this);
+                }
+            });
+
         }
     }
 

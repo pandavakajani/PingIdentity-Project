@@ -7,10 +7,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.android.volley.RequestQueue;
-import com.example.encryptmystrings.firebase.FirebaseMessagingHelper;
-import com.google.firebase.messaging.FirebaseMessaging;
-
 public class MainModelView extends ViewModel {
 
     //declaration of members
@@ -18,6 +14,7 @@ public class MainModelView extends ViewModel {
     private LiveData<String> operationStatus;
     private LiveData<String> inputText;
     private LiveData<String> textView;
+    private LiveData<Boolean> registerPushMessage;
 
     private MainModel model;
 
@@ -43,6 +40,10 @@ public class MainModelView extends ViewModel {
         if(textView == null){
             textView = model.getTextView();
         }
+
+        if(registerPushMessage == null){
+            registerPushMessage = model.getRegisterPush();
+        }
     }
 
     /* the liveDate getter methods return LiveData in order to prevent writing
@@ -64,12 +65,24 @@ public class MainModelView extends ViewModel {
         return textView;
     }
 
+    public LiveData<Boolean> getRegisterPushMessage() {
+        return registerPushMessage;
+    }
+
+    public void updateToggleBiometric(boolean useBiometric){
+        model.setToggleEncryption(useBiometric);
+    }
+
     public void updateInputText(String inputText){
         model.setInputText(inputText);
     }
 
     public void updateTextView(String text){
         model.setTextView(text);
+    }
+
+    public void updateRegistrationToPush(boolean registerToPush){
+        model.setRegisterPushMessage(registerToPush);
     }
 
     // bind method was done in the layout (main_fragment)
@@ -82,13 +95,10 @@ public class MainModelView extends ViewModel {
     // bind method was done in the layout (main_fragment)
     public void onButtonSendClicked(View v){
         //1. encrypt
-        NavController navController = Navigation.findNavController(v);
-        navigateToDecryptedFragment(navController);
-
-//        if(navController!=null){
-//            MainFragmentDirections.ActionMainFragmentToDecryptedFragment action = MainFragmentDirections.actionMainFragmentToDecryptedFragment().setDecryptedText(getInputText().getValue());
-//            navController.navigate(action);
-//        }
+//        NavController navController = Navigation.findNavController(v);
+//        navigateToDecryptedFragment(navController);
+        //register to push when app goes to background
+        updateRegistrationToPush(true);
     }
 
     public void navigateToDecryptedFragment(NavController navController){
