@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="viewModel"
             type="com.example.encryptmystrings.ui.main.MainModelView" />
@@ -13,49 +14,100 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.MainFragment"
-        android:layout_margin="@dimen/standard_margin">
+        android:layout_margin="@dimen/standard_margin"
+        tools:context=".ui.main.MainFragment">
 
 
         <EditText
             android:id="@+id/edit_text_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/standard_margin"
             android:hint="@string/text_field_hint"
-            android:text="@{viewModel.inputText}"/>
+            android:text="@{viewModel.inputText}"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_keypair"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_red_dark"
+            android:padding="3dp"
+            android:text="@string/keypair_created"
+            android:textAlignment="center"
+            android:visibility="@{viewModel.keyPairTextViewVisibility}"
+            app:layout_constraintBottom_toTopOf="@id/textView_string_encrypted"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/use_biometric_switch"
+            />
+
+        <TextView
+            android:id="@+id/textView_string_encrypted"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:background="@android:color/holo_green_light"
+            android:padding="3dp"
+            android:text="@string/string_encrypted"
+            android:textAlignment="center"
+            android:visibility="@{viewModel.encryptedTextViewVisibility}"
+            app:layout_constraintBottom_toTopOf="@id/textView_string_signed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_keypair" />
+
+        <TextView
+            android:id="@+id/textView_string_signed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_purple"
+            android:padding="3dp"
+            android:text="String signed"
+            android:textAlignment="center"
+            android:visibility="@{viewModel.signedTextViewVisibility}"
+            app:layout_constraintBottom_toTopOf="@+id/status_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.508"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_string_encrypted" />
 
         <TextView
             android:id="@+id/status_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.operationStatus}"
+            android:background="@android:color/holo_blue_bright"
+            android:padding="3dp"
+            android:text="@string/timer_created"
+            android:textAlignment="center"
+            android:visibility="@{viewModel.timerTextViewVisibility}"
             app:layout_constraintBottom_toTopOf="@+id/button_send"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/use_biometric_switch" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_string_signed"
+            tools:text="place holder" />
+
+
 
         <Button
             android:id="@+id/button_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/half_standard_margin"
+            android:onClick="@{(view) -> viewModel.onButtonSendClicked(view)}"
             android:text="@string/push_to_encrypt"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="@dimen/half_standard_margin"
-            android:onClick="@{(view) -> viewModel.onButtonSendClicked(view)}"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/use_biometric_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/use_biometric_authentication"
             android:layout_marginTop="@dimen/half_standard_margin"
+            android:onCheckedChanged="@{() -> viewModel.onEncryptionToggled()}"
+            android:text="@string/use_biometric_authentication"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_input"
-            android:onCheckedChanged="@{() -> viewModel.onEncryptionToggled()}"/>
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_input" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

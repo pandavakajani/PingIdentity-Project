@@ -7,14 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.encryptmystrings.R;
 import com.example.encryptmystrings.biometric.BiometricHelper;
 import com.example.encryptmystrings.databinding.DecrypedLayoutBindingImpl;
-
-import java.util.HashMap;
-
 
 public class DecryptedFragment extends Fragment implements BiometricHelper.BiometricAuthenticationResponseListener{
     MainModelView modelView;
@@ -26,7 +24,7 @@ public class DecryptedFragment extends Fragment implements BiometricHelper.Biome
         if(shouldUseBiometric) {
             goThroughBiometric();
         }else{
-            updateTextView();
+            authenticationResolutionSuccess();
         }
     }
 
@@ -43,10 +41,6 @@ public class DecryptedFragment extends Fragment implements BiometricHelper.Biome
         binding.setViewModel(modelView);
 
         return binding.getRoot();
-    }
-
-    private void updateTextView(){
-        modelView.updateTextView(DecryptedFragmentArgs.fromBundle(getArguments()).getDecryptedText());
     }
 
     private void goThroughBiometric(){
@@ -66,6 +60,6 @@ public class DecryptedFragment extends Fragment implements BiometricHelper.Biome
     @Override
     public void authenticationResolutionSuccess() {
         //decrypt and show field
-        updateTextView();
+        modelView.decryptText(DecryptedFragmentArgs.fromBundle(getArguments()).getDecryptedText());
     }
 }

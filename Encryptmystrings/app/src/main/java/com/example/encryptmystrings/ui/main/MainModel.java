@@ -22,6 +22,13 @@ public class MainModel {
     private MutableLiveData<String> inputText = new MutableLiveData<>("");
     //data to support the DecryptedFragment
     private MutableLiveData<String> textView = new MutableLiveData<>("");
+    //data to support the labels visibility
+    private MutableLiveData<Boolean> keyPairCreatedVisibility = new MutableLiveData<>(false);
+    private MutableLiveData<Boolean> encryptedVisibility = new MutableLiveData<>(false);
+    private MutableLiveData<Boolean> signedVisibility = new MutableLiveData<>(false);
+    private MutableLiveData<Boolean> timerCreatedCreatedVisibility = new MutableLiveData<>(false);
+    private MutableLiveData<Boolean> verifiedVisibility = new MutableLiveData<>(false);
+    private MutableLiveData<Boolean> decryptedVisibility = new MutableLiveData<>(false);
 
     public LiveData<Boolean> getToggleEncryption(){
         return toggleEncryption;
@@ -51,5 +58,53 @@ public class MainModel {
     }
     public void setRegisterPushMessage(Boolean registerPushMessage) {
         this.registerPushMessage.setValue(registerPushMessage);
+    }
+
+    public MutableLiveData<Boolean> getKeyPairCreatedVisibility() {
+        return keyPairCreatedVisibility;
+    }
+
+    public void setKeyPairCreatedVisibility(boolean keyPairCreatedVisibility) {
+        this.keyPairCreatedVisibility.setValue(keyPairCreatedVisibility);
+    }
+
+    public MutableLiveData<Boolean> getEncryptedVisibility() {
+        return encryptedVisibility;
+    }
+
+    public void setEncryptedVisibility(boolean encryptedVisibility) {
+        this.encryptedVisibility.setValue(encryptedVisibility);
+    }
+
+    public MutableLiveData<Boolean> getSignedVisibility() {
+        return signedVisibility;
+    }
+
+    public void setSignedVisibility(boolean signedVisibility) {
+        this.signedVisibility.setValue(signedVisibility);
+    }
+
+    public MutableLiveData<Boolean> getTimerCreatedCreatedVisibility() {
+        return timerCreatedCreatedVisibility;
+    }
+
+    public void setTimerCreatedCreatedVisibility(boolean timerCreatedCreatedVisibility) {
+        this.timerCreatedCreatedVisibility.setValue(timerCreatedCreatedVisibility);
+    }
+
+    public MutableLiveData<Boolean> getVerifiedVisibility() {
+        return verifiedVisibility;
+    }
+
+    public void setVerifiedVisibility(boolean verifiedVisibility) {
+        this.verifiedVisibility.setValue(verifiedVisibility);
+    }
+
+    public MutableLiveData<Boolean> getDecryptedVisibility() {
+        return decryptedVisibility;
+    }
+
+    public void setDecryptedVisibility(boolean decryptedVisibility) {
+        this.decryptedVisibility.setValue(decryptedVisibility);
     }
 }

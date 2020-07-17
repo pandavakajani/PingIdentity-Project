@@ -11,18 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import com.example.encryptmystrings.firebase.FirebaseMessagingHelper;
-import com.example.encryptmystrings.firebase.FirebaseWorker;
 import com.example.encryptmystrings.ui.main.MainFragment;
 import com.example.encryptmystrings.ui.main.MainModelView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     private MainModelView modelView;

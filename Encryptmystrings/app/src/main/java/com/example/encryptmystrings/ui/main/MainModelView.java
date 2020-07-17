@@ -1,12 +1,16 @@
 package com.example.encryptmystrings.ui.main;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -18,7 +22,9 @@ import com.example.encryptmystrings.firebase.FirebaseWorker;
 
 import java.util.concurrent.TimeUnit;
 
-public class MainModelView extends ViewModel {
+import static android.view.View.VISIBLE;
+
+public class MainModelView extends AndroidViewModel implements EncryptionManager.EncryptionManagerListener{
     private static final long DELAY = 15;
     public static final String PREFS = "modelviewPrefs";
 
@@ -32,6 +38,11 @@ public class MainModelView extends ViewModel {
     private MainModel model;
     private OneTimeWorkRequest task;
     private EncryptionManager encryptionManager;
+    private Handler handler = new Handler(Looper.getMainLooper());
+
+    public MainModelView(@NonNull Application application) {
+        super(application);
+    }
 
     //init our members
     public void init(){
@@ -61,7 +72,7 @@ public class MainModelView extends ViewModel {
         }
 
         if(encryptionManager == null){
-            encryptionManager = new EncryptionManager();
+            encryptionManager = new EncryptionManager(this);
         }
     }
 
@@ -104,10 +115,6 @@ public class MainModelView extends ViewModel {
         model.setRegisterPushMessage(registerToPush);
     }
 
-    public OneTimeWorkRequest getTask() {
-        return task;
-    }
-
     // bind method was done in the layout (main_fragment)
     public void onEncryptionToggled(){
         boolean isOn = toggleEncryption.getValue();
@@ -115,10 +122,55 @@ public class MainModelView extends ViewModel {
         model.setToggleEncryption(!toggleEncryption.getValue());
     }
 
-    public void createTask(String token, String body, String title){
+
+    /************* UI ACTIONS *****************/
+    // bind method was done in the layout (main_fragment)
+    public void onButtonSendClicked(View v){
+        encryptionManager.encryptString(inputText.getValue());
+    }
+
+    public int getKeyPairTextViewVisibility(){
+        return model.getKeyPairCreatedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    }
+
+    public int getEncryptedTextViewVisibility(){
+        return model.getEncryptedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    }
+
+    public int getSignedTextViewVisibility(){
+        return model.getSignedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    }
+
+    public int getTimerTextViewVisibility(){
+        return model.getTimerCreatedCreatedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    }
+
+    public int getVerifiedTextViewVisibility(){
+        return model.getVerifiedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    }
+
+    public int getDecryptedTextViewVisibility(){
+        return model.getDecryptedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    }
+
+    /************* NAVIGATION *****************/
+    public void navigateToDecryptedFragment(NavController navController){
+        if(navController!=null){
+            MainFragmentDirections.ActionMainFragmentToDecryptedFragment action = MainFragmentDirections.actionMainFragmentToDecryptedFragment().setDecryptedText(getInputText().getValue());
+            navController.navigate(action);
+        }
+    }
+
+
+    /************* PUSH MESSAGE *****************/
+    public OneTimeWorkRequest getTask() {
+        return task;
+    }
+
+    public void createTask(String token, String body, String title, String encryptedString){
         // Passing params
         Data.Builder data = new Data.Builder();
-        data.putString(FirebaseWorker.DECRYPTED_STRING, inputText.getValue());
+        data.putString(FirebaseWorker.DECRYPTED_STRING, encryptedString);
         data.putString(FirebaseWorker.REGISTRATION_TOKEN, token);
         data.putString(FirebaseWorker.MESSAGE_TITLE, title);
         data.putString(FirebaseWorker.MESSAGE_BODY, body);
@@ -131,36 +183,79 @@ public class MainModelView extends ViewModel {
 
     }
 
-    // bind method was done in the layout (main_fragment)
-    public void onButtonSendClicked(View v){
-        //1. encrypt
-//        NavController navController = Navigation.findNavController(v);
-//        navigateToDecryptedFragment(navController);
-        //register to push when app goes to background
-        SharedPreferences prefs = v.getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    private void generateFuturePushTask(String encryptedString){
+
+        SharedPreferences prefs =getApplication().getBaseContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         if(prefs==null){
             return;
         }
-
-        String encrypted = encryptionManager.encryptString(inputText.getValue());
-//        String signature = encryptionManager.sign(inputText.getValue());
-//
-//        String decrypetd = encryptionManager.decryptString(encrypted);
-//        boolean isVerified = encryptionManager.verify(signature, decrypetd);
-
-
-
-        String token = prefs.getString(v.getContext().getString(R.string.fcm_token),"");
-        String title = v.getContext().getString(R.string.message_title);
-        String body = v.getContext().getString(R.string.message_body);
-        createTask(token, body, title);
+        String token = prefs.getString(getApplication().getBaseContext().getString(R.string.fcm_token),"");
+        String title = getApplication().getBaseContext().getString(R.string.message_title);
+        String body = getApplication().getBaseContext().getString(R.string.message_body);
+        createTask(token, body, title, encryptedString);
         updateRegistrationToPush(true);
+        model.setTimerCreatedCreatedVisibility(true);
     }
 
-    public void navigateToDecryptedFragment(NavController navController){
-        if(navController!=null){
-            MainFragmentDirections.ActionMainFragmentToDecryptedFragment action = MainFragmentDirections.actionMainFragmentToDecryptedFragment().setDecryptedText(getInputText().getValue());
-            navController.navigate(action);
-        }
+    public void decryptText(String encryptedText){
+        encryptionManager.decryptString(encryptedText);
     }
+
+    /************* Implementation of EncryptionManager.EncryptionManagerListener to support responses from background work *************/
+    @Override
+    public void onKeyCreated(final boolean isCreated){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                model.setKeyPairCreatedVisibility(Boolean.valueOf(isCreated));
+            }
+        });
+
+    }
+
+    @Override
+    public void onEncryptFinished(final String result) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(result!=null){
+                    model.setEncryptedVisibility(true);
+                    generateFuturePushTask(result);
+                }else{
+                    model.setEncryptedVisibility(false);
+                    Toast.makeText(getApplication(), R.string.decrtption_failed, Toast.LENGTH_LONG);
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onDecryptedFinished(final String result) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(result!=null){
+                    model.setDecryptedVisibility(true);
+                    updateTextView(result);
+                }else {
+                    model.setDecryptedVisibility(false);
+                    Toast.makeText(getApplication(), R.string.encrtption_failed, Toast.LENGTH_LONG);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onSignFinished(String result) {
+
+    }
+
+    @Override
+    public void onVerifyFinished(boolean result) {
+    }
+
+
 }

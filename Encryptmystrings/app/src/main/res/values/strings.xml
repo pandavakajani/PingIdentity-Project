@@ -14,4 +14,9 @@
     <string name="biometric_error_non_enrolled">This phone is not associated with any biometric credentials</string>
     <string name="biometric_error_hw_unavailable">Biometric features are currently unavailable.</string>
     <string name="biometric_error_no_hardware">No biometric features available on this device.</string>
+    <string name="decrtption_failed">Encryption failed</string>
+    <string name="encrtption_failed">Encryption failed</string>
+    <string name="keypair_created">Keypair created!</string>
+    <string name="string_encrypted">String encrypted</string>
+    <string name="timer_created">Timer created</string>
 </resources>

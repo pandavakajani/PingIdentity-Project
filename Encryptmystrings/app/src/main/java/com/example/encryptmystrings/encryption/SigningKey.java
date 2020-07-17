@@ -2,7 +2,6 @@ package com.example.encryptmystrings.encryption;
 
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -14,9 +13,9 @@ import java.security.cert.Certificate;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+
 
 public class SigningKey implements IEncryption {
     private String KEY_STORE = "AndroidKeyStore";
@@ -72,7 +71,7 @@ public class SigningKey implements IEncryption {
         final KeyGenParameterSpec spec = new KeyGenParameterSpec.Builder(
                 getAlias(),
                 KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                 .setDigests(KeyProperties.DIGEST_SHA256)
                 .build();
         keyGen.initialize(spec);
