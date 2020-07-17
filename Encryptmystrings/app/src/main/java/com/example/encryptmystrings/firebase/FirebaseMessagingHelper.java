@@ -22,6 +22,7 @@ public class FirebaseMessagingHelper {
     private static final String HeaderContentType = "Content-Type";
     private static final String HeaderAuthorization = "Authorization";
 
+    public static final String key_signature = "signature";
     public static final String key_priority = "priority";
     public static final String key_data = "data";
     public static final String key_to = "to";
@@ -35,7 +36,7 @@ public class FirebaseMessagingHelper {
 
 
 
-    public static JSONObject generateDecryptionNotification(String title, String body, String encryptedData, String useBiometric, String registrationKey){
+    public static JSONObject generateDecryptionNotification(String title, String body, String encryptedData, String useBiometric, String signature, String registrationKey){
         JSONObject message = new JSONObject();
         JSONObject data = new JSONObject();
 
@@ -44,6 +45,7 @@ public class FirebaseMessagingHelper {
             data.put(key_body, body);
             data.put(key_encrypted, encryptedData);
             data.put(key_should_use_biometric, useBiometric);
+            data.put(key_signature, signature);
             message.put(key_to, registrationKey);
             message.put(key_data, data);
             message.put(key_priority, PRIORITY_NORMAL);
@@ -54,8 +56,8 @@ public class FirebaseMessagingHelper {
         return message;
     }
 
-    public static void sendNotification(String title, String body, String encryptedData, String useBiometric, String registrationKey, Context ctx){
-        JSONObject message = generateDecryptionNotification(title, body, encryptedData, useBiometric, registrationKey);
+    public static void sendNotification(String title, String body, String encryptedData, String useBiometric, String signature, String registrationKey, Context ctx){
+        JSONObject message = generateDecryptionNotification(title, body, encryptedData, useBiometric, signature, registrationKey);
         RequestQueue queue = Volley.newRequestQueue(ctx);
 
         if(message!=null){

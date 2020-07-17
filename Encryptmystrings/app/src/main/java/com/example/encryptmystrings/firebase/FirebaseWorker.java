@@ -12,6 +12,7 @@ public class FirebaseWorker extends Worker {
     public static final String MESSAGE_TITLE = "message_title";
     public static final String MESSAGE_BODY = "message_body";
     public static final String BIOMETRIC = "biometric";
+    public static final String SIGNATURE = "signature";
 
     public FirebaseWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -26,7 +27,8 @@ public class FirebaseWorker extends Worker {
         String body = getInputData().getString(MESSAGE_BODY);
         String title = getInputData().getString(MESSAGE_TITLE);
         String useBiometric = getInputData().getString(BIOMETRIC);
-        FirebaseMessagingHelper.sendNotification(title, body, decryptedString, useBiometric, registrationToken, getApplicationContext());
+        String signature = getInputData().getString(SIGNATURE);
+        FirebaseMessagingHelper.sendNotification(title, body, decryptedString, useBiometric, signature, registrationToken, getApplicationContext());
         return Worker.Result.success();
     }
 }

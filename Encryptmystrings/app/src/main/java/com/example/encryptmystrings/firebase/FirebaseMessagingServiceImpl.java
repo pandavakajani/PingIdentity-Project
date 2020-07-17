@@ -56,11 +56,12 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
         String body = data.get(FirebaseMessagingHelper.key_body);
         String title = data.get(FirebaseMessagingHelper.key_title);
         String encrypted = data.get(FirebaseMessagingHelper.key_encrypted);
+        String signature = data.get(FirebaseMessagingHelper.key_signature);
         String useBiometric = data.get(FirebaseMessagingHelper.key_should_use_biometric);
 
         //verify the response payload
         if(isNotEmpty(encrypted) && isNotEmpty(title) && isNotEmpty(body) && isNotEmpty(useBiometric)){
-            notifyApp(title, body, encrypted, useBiometric);
+            notifyApp(title, body, encrypted, useBiometric, signature);
         }
     }
 
@@ -71,13 +72,13 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
     /**
      * Notify the app about the new push message and add a notification with data
      */
-    private void notifyApp(String title, String body, String encrypted, String useBiometric){
+    private void notifyApp(String title, String body, String encrypted, String useBiometric, String signature){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.common_full_open_on_phone)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(createPendingIntent(encrypted, useBiometric))
+                .setContentIntent(createPendingIntent(encrypted, useBiometric, signature))
                 .setAutoCancel(true);
         createNotificationChannel();
 
@@ -87,11 +88,12 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
         notificationManager.notify(notification_id++, builder.build());
     }
 
-    private PendingIntent createPendingIntent(String encrypted, String useBiometric){
+    private PendingIntent createPendingIntent(String encrypted, String useBiometric, String signature){
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(FirebaseMessagingHelper.key_encrypted, encrypted);
         intent.putExtra(FirebaseMessagingHelper.key_should_use_biometric, useBiometric);
+        intent.putExtra(FirebaseMessagingHelper.key_signature, signature);
         return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

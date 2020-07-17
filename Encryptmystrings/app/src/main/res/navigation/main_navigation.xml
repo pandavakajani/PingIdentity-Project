@@ -21,6 +21,11 @@
             android:defaultValue="Test" />
 
         <argument
+            android:name="signature"
+            app:argType="string"
+            android:defaultValue="Test" />
+
+        <argument
             android:name="useBiometric"
             app:argType="boolean"
             android:defaultValue="false" />

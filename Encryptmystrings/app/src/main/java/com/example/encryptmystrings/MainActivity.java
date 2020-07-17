@@ -58,15 +58,16 @@ public class MainActivity extends AppCompatActivity {
         {
             Log.d("MainActivity: ", "********from fresh *************");
             if(getIntent().hasExtra(FirebaseMessagingHelper.key_encrypted)){
-                String decrypted = getIntent().getStringExtra(FirebaseMessagingHelper.key_encrypted);
+                String encrypted = getIntent().getStringExtra(FirebaseMessagingHelper.key_encrypted);
                 String biometricStatus = getIntent().getStringExtra(FirebaseMessagingHelper.key_should_use_biometric);
-                if(decrypted!=null){
+                String signature = getIntent().getStringExtra(FirebaseMessagingHelper.key_signature);
+                if(encrypted!=null && signature != null){
                     //go directly to the second fragment and show the decrypted string there
-                    modelView.updateInputText(decrypted);
+//                    modelView.updateInputText(encrypted);
                     //this line was added to support killing of the app by the user which deletes the data
                     modelView.updateToggleBiometric(biometricStatus.equals(FirebaseMessagingHelper.USE_BIOMETRIC_TRUE) ? true : false);
                     NavController navController = Navigation.findNavController(this,R.id.myNavHostFragment);
-                    modelView.navigateToDecryptedFragment(navController);
+                    modelView.navigateToDecryptedFragment(navController, encrypted, signature);
                     //clear intent for the next call
                     getIntent().removeExtra(FirebaseMessagingHelper.key_encrypted);
                     getIntent().removeExtra(FirebaseMessagingHelper.key_should_use_biometric);

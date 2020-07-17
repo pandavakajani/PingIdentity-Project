@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.encryptmystrings.R;
@@ -60,6 +59,7 @@ public class DecryptedFragment extends Fragment implements BiometricHelper.Biome
     @Override
     public void authenticationResolutionSuccess() {
         //decrypt and show field
-        modelView.decryptText(DecryptedFragmentArgs.fromBundle(getArguments()).getDecryptedText());
+        modelView.decryptAndVerify(DecryptedFragmentArgs.fromBundle(getArguments()).getDecryptedText(),
+                DecryptedFragmentArgs.fromBundle(getArguments()).getSignature());
     }
 }

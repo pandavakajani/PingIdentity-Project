@@ -1,5 +1,6 @@
 package com.example.encryptmystrings.ui.main;
 
+import androidx.databinding.Bindable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 

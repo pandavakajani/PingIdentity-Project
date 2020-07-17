@@ -19,4 +19,7 @@
     <string name="keypair_created">Keypair created!</string>
     <string name="string_encrypted">String encrypted</string>
     <string name="timer_created">Timer created</string>
+    <string name="signing_failed">Signing has failed</string>
+    <string name="verify_failed">Verify failed</string>
+    <string name="decryption_process_failed">Decryption process failed</string>
 </resources>
