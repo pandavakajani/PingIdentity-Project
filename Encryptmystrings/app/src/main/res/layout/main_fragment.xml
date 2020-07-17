@@ -31,16 +31,18 @@
             android:id="@+id/textView_keypair"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
             android:background="@android:color/holo_red_dark"
             android:padding="3dp"
             android:text="@string/keypair_created"
             android:textAlignment="center"
-            android:visibility="@{viewModel.keyPairTextViewVisibility}"
+            android:visibility="@{viewModel.keyPairTextViewVisibility == true ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/textView_string_encrypted"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/use_biometric_switch"
-            />
+            app:layout_constraintVertical_bias="0.13"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/textView_string_encrypted"
@@ -50,11 +52,12 @@
             android:padding="3dp"
             android:text="@string/string_encrypted"
             android:textAlignment="center"
-            android:visibility="@{viewModel.encryptedTextViewVisibility}"
+            android:visibility="@{viewModel.encryptedTextViewVisibility == true ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/textView_string_signed"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_keypair" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_keypair"
+            android:layout_marginBottom="6dp"/>
 
         <TextView
             android:id="@+id/textView_string_signed"
@@ -64,12 +67,13 @@
             android:padding="3dp"
             android:text="String signed"
             android:textAlignment="center"
-            android:visibility="@{viewModel.signedTextViewVisibility}"
+            android:visibility="@{viewModel.signedTextViewVisibility == true ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/status_textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.508"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_string_encrypted" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_string_encrypted"
+            android:layout_marginBottom="6dp"/>
 
         <TextView
             android:id="@+id/status_textView"
@@ -79,13 +83,12 @@
             android:padding="3dp"
             android:text="@string/timer_created"
             android:textAlignment="center"
-            android:visibility="@{viewModel.timerTextViewVisibility}"
+            android:visibility="@{viewModel.timerTextViewVisibility == true ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/button_send"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_string_signed"
             tools:text="place holder" />
-
 
 
         <Button

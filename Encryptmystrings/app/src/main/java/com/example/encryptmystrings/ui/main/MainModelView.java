@@ -3,11 +3,11 @@ package com.example.encryptmystrings.ui.main;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.Bindable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
@@ -137,31 +137,37 @@ public class MainModelView extends AndroidViewModel implements EncryptionManager
     // bind method was done in the layout (main_fragment)
     public void onButtonSendClicked(View v){
         resetAllFlags();
-        encryptionManager.encryptAndSign(inputText.getValue());
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                encryptionManager.encryptAndSign(inputText.getValue());
+            }
+        }, 500);
     }
 
-    public int getKeyPairTextViewVisibility(){
-        return model.getKeyPairCreatedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    public LiveData<Boolean> getKeyPairTextViewVisibility(){
+        return model.getKeyPairCreatedVisibility();
     }
 
-    public int getEncryptedTextViewVisibility(){
-        return model.getEncryptedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    public LiveData<Boolean> getEncryptedTextViewVisibility(){
+        return model.getEncryptedVisibility();
     }
 
-    public int getSignedTextViewVisibility(){
-        return model.getSignedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    public LiveData<Boolean> getSignedTextViewVisibility(){
+        return model.getSignedVisibility();
     }
 
-    public int getTimerTextViewVisibility(){
-        return model.getTimerCreatedCreatedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    public LiveData<Boolean> getTimerTextViewVisibility(){
+        return model.getTimerCreatedCreatedVisibility();
     }
 
-    public int getVerifiedTextViewVisibility(){
-        return model.getVerifiedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    public LiveData<Boolean> getVerifiedTextViewVisibility(){
+        return model.getVerifiedVisibility();
     }
 
-    public int getDecryptedTextViewVisibility(){
-        return model.getDecryptedVisibility().getValue() == false ? View.INVISIBLE : VISIBLE;
+    public LiveData<Boolean> getDecryptedTextViewVisibility(){
+        return model.getDecryptedVisibility();
     }
 
     /************* NAVIGATION *****************/

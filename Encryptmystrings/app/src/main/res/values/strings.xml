@@ -22,4 +22,6 @@
     <string name="signing_failed">Signing has failed</string>
     <string name="verify_failed">Verify failed</string>
     <string name="decryption_process_failed">Decryption process failed</string>
+    <string name="text_decrypted">Text decrypted</string>
+    <string name="text_verified">text_verified</string>
 </resources>
