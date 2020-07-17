@@ -2,6 +2,7 @@ package com.example.encryptmystrings.ui.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.view.View;
 
 import androidx.lifecycle.LiveData;
@@ -11,6 +12,7 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 
 import com.example.encryptmystrings.R;
+import com.example.encryptmystrings.encryption.EncryptionManager;
 import com.example.encryptmystrings.firebase.FirebaseMessagingHelper;
 import com.example.encryptmystrings.firebase.FirebaseWorker;
 
@@ -29,6 +31,7 @@ public class MainModelView extends ViewModel {
 
     private MainModel model;
     private OneTimeWorkRequest task;
+    private EncryptionManager encryptionManager;
 
     //init our members
     public void init(){
@@ -55,6 +58,10 @@ public class MainModelView extends ViewModel {
 
         if(registerPushMessage == null){
             registerPushMessage = model.getRegisterPush();
+        }
+
+        if(encryptionManager == null){
+            encryptionManager = new EncryptionManager();
         }
     }
 
@@ -134,6 +141,15 @@ public class MainModelView extends ViewModel {
         if(prefs==null){
             return;
         }
+
+        String encrypted = encryptionManager.encryptString(inputText.getValue());
+//        String signature = encryptionManager.sign(inputText.getValue());
+//
+//        String decrypetd = encryptionManager.decryptString(encrypted);
+//        boolean isVerified = encryptionManager.verify(signature, decrypetd);
+
+
+
         String token = prefs.getString(v.getContext().getString(R.string.fcm_token),"");
         String title = v.getContext().getString(R.string.message_title);
         String body = v.getContext().getString(R.string.message_body);
