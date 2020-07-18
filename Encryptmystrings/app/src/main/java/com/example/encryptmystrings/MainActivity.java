@@ -50,20 +50,27 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * The method is checking for messages from pending intent.
+     * If the app is opened from push than we try to get the parameters and start decryption process.
+     * I had to add the {@link Intent#FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY} check to separate the cases in which
+     * the app is initialized from recent app and therefor carries a history intent which led to incorrect behaviours.
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        //checking if intent was provided to show the decrypted string
+        //check if the app is launched from recent apps
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0)
         {
             Log.d("MainActivity: ", "********from fresh *************");
+            //checking if intent was provided to show the decrypted string
             if(getIntent().hasExtra(FirebaseMessagingHelper.key_encrypted)){
                 String encrypted = getIntent().getStringExtra(FirebaseMessagingHelper.key_encrypted);
                 String biometricStatus = getIntent().getStringExtra(FirebaseMessagingHelper.key_should_use_biometric);
                 String signature = getIntent().getStringExtra(FirebaseMessagingHelper.key_signature);
+                //validating params
                 if(encrypted!=null && signature != null){
                     //go directly to the second fragment and show the decrypted string there
-//                    modelView.updateInputText(encrypted);
                     //this line was added to support killing of the app by the user which deletes the data
                     modelView.updateToggleBiometric(biometricStatus.equals(FirebaseMessagingHelper.USE_BIOMETRIC_TRUE) ? true : false);
                     NavController navController = Navigation.findNavController(this,R.id.myNavHostFragment);
@@ -77,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * In this method i check if we have a true flag for pending push task.
+     * If we do i am sending it using the {@link WorkManager} and unset the flag to false.
+     * The task is already built to wait 15 seconds before it is running.
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -92,10 +104,6 @@ public class MainActivity extends AppCompatActivity {
     private void initViewModel() {
         modelView = new ViewModelProvider(this).get(MainModelView.class);
         modelView.init();
-    }
-
-    public MainModelView getModelView() {
-        return modelView;
     }
 
 }

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.databinding.Bindable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
@@ -96,12 +97,6 @@ public class MainModelView extends AndroidViewModel implements EncryptionManager
      * to the live data from outside
      */
 
-    public void onEncryptionToggled(){
-        boolean isOn = toggleEncryption.getValue();
-        model.setOperationStatus("Toggle button is now turned " + (isOn==false? "ON" : "OFF"));
-        model.setToggleEncryption(!toggleEncryption.getValue());
-    }
-
     private void resetAllFlags(){
         model.setVerifiedVisibility(false);
         model.setSignedVisibility(false);
@@ -169,6 +164,17 @@ public class MainModelView extends AndroidViewModel implements EncryptionManager
     public void updateTextView(String text){
         model.setTextView(text);
     }
+
+    public void onEncryptionToggled(boolean value){
+        // Avoids infinite loops.
+        boolean isOn = toggleEncryption.getValue();
+        if (isOn != value) {
+            model.setToggleEncryption(value);
+            model.setOperationStatus("Toggle button is now turned " + (isOn==false? "ON" : "OFF"));
+        }
+
+    }
+
 
     /************* NAVIGATION *****************/
     /**

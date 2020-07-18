@@ -117,9 +117,9 @@ public class EncryptionManager {
                 decryptedStr = encryptionHelper.decrypt(text, pair.getPrivate());//decrypt
                 if(decryptedStr!=null && !decryptedStr.isEmpty()) {//validate response
                     listener.onDecryptedFinished(true);//notify caller on SUCCESS
-                }else{
-
-                }listener.onDecryptedFinished(false);//notify caller on FAILURE
+                }else {
+                    listener.onDecryptedFinished(false);//notify caller on FAILURE
+                }
             }
         } catch (Exception e) {
             listener.onDecryptedFinished(false);//notify caller on FAILURE
