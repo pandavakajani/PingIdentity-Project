@@ -6,6 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+/**
+ * Simple worker class that is in charge of passing params to the notification message and
+ * sending it using FirebaseMessagingHelper.
+ * It will run from the background.
+ */
 public class FirebaseWorker extends Worker {
     public static final String REGISTRATION_TOKEN = "registration_token";
     public static final String DECRYPTED_STRING = "decrypted_queue";
@@ -18,6 +23,10 @@ public class FirebaseWorker extends Worker {
         super(context, workerParams);
     }
 
+    /**
+     * Extracts params and passing it to FirebaseMessagingHelper
+     * @return status of the work
+     */
     @NonNull
     @Override
     public Result doWork() {

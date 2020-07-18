@@ -14,6 +14,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is in charge of sending messages to firebase.
+ * It knows to create messages with given params and to sent it to firebase.
+ */
 public class FirebaseMessagingHelper {
     private static final String TAG = "FirebaseMessagingHelper";
     private static final String serverKey = "key=AAAAFQejK3Y:APA91bFfWZFSaeTiFUlLrJ4Q-9TBCdQFbf8f4Xi-EuHN2UtuYgwoFlrfSnGPE5Rq0GVD71-aJpNy_TgY7AzGXxLZ5bkjC6xp-Tt9Bdvvjmj0dzyaP-tkKiPNCStKwjttCtbozKajCyPk";
@@ -35,7 +39,16 @@ public class FirebaseMessagingHelper {
     public static final String USE_BIOMETRIC_FALSE = "false";
 
 
-
+    /**
+     * Creating a json object to be sent to firebase
+     * @param title notification title
+     * @param body notification body
+     * @param encryptedData encrypted data param
+     * @param useBiometric should use biometric when opening notification
+     * @param signature signature of the plain text
+     * @param registrationKey client registration key to firebase
+     * @return notification as json object
+     */
     public static JSONObject generateDecryptionNotification(String title, String body, String encryptedData, String useBiometric, String signature, String registrationKey){
         JSONObject message = new JSONObject();
         JSONObject data = new JSONObject();
@@ -56,6 +69,16 @@ public class FirebaseMessagingHelper {
         return message;
     }
 
+    /**
+     * Sending message to firebase
+     * @param title notification title
+     * @param body notification body
+     * @param encryptedData encrypted data param
+     * @param useBiometric should use biometric when opening notification
+     * @param signature signature of the plain text
+     * @param registrationKey client registration key to firebase
+     * @param ctx context
+     */
     public static void sendNotification(String title, String body, String encryptedData, String useBiometric, String signature, String registrationKey, Context ctx){
         JSONObject message = generateDecryptionNotification(title, body, encryptedData, useBiometric, signature, registrationKey);
         RequestQueue queue = Volley.newRequestQueue(ctx);

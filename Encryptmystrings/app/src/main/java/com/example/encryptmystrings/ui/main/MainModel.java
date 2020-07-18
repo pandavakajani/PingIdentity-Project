@@ -1,19 +1,15 @@
 package com.example.encryptmystrings.ui.main;
 
-import androidx.databinding.Bindable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+/**
+ * This class is the Model of the activity.
+ * It holds the data using {@link MutableLiveData}
+ * The UI is bound to this data through @{@link MainModelView}
+ * To make sure no one is amending the data directly all the getter methods return {@link LiveData}
+ */
 public class MainModel {
-    //singleton pattern
-    private MainModel(){}
-    private static MainModel instance;
-    public static MainModel getInstance(){
-        if(instance == null){
-            instance = new MainModel();
-        }
-        return instance;
-    }
 
     //data to support push notification
     private MutableLiveData<Boolean> registerPushMessage = new MutableLiveData<>(false);

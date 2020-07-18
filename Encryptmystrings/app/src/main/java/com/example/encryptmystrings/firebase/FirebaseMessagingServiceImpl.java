@@ -16,6 +16,9 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
+/**
+ * Service for handling incoming messages from firebase
+ */
 public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMessagingServiceImpl";
     private static final String CHANNEL_ID = "PING_FIREBASE_CHANEL";
@@ -29,37 +32,20 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
      *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
-    // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // [START_EXCLUDE]
-        // There are two types of messages data messages and notification messages. Data messages
-        // are handled
-        // here in onMessageReceived whether the app is in the foreground or background. Data
-        // messages are the type
-        // traditionally used with GCM. Notification messages are only received here in
-        // onMessageReceived when the app
-        // is in the foreground. When the app is in the background an automatically generated
-        // notification is displayed.
-        // When the user taps on the notification they are returned to the app. Messages
-        // containing both notification
-        // and data payloads are treated as notification messages. The Firebase console always
-        // sends notification
-        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-        // [END_EXCLUDE]
-
-        // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ\
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Map<String,String> data = remoteMessage.getData();
 
+        //extract message params
         String body = data.get(FirebaseMessagingHelper.key_body);
         String title = data.get(FirebaseMessagingHelper.key_title);
         String encrypted = data.get(FirebaseMessagingHelper.key_encrypted);
         String signature = data.get(FirebaseMessagingHelper.key_signature);
         String useBiometric = data.get(FirebaseMessagingHelper.key_should_use_biometric);
 
-        //verify the response payload
+        //verify the response payload and send notification if needed
         if(isNotEmpty(encrypted) && isNotEmpty(title) && isNotEmpty(body) && isNotEmpty(useBiometric)){
             notifyApp(title, body, encrypted, useBiometric, signature);
         }
@@ -71,6 +57,11 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
 
     /**
      * Notify the app about the new push message and add a notification with data
+     * @param title title of notification
+     * @param body body of notification
+     * @param encrypted encrypted text
+     * @param useBiometric should use biometric when opening the push notification
+     * @param signature signature of the original text
      */
     private void notifyApp(String title, String body, String encrypted, String useBiometric, String signature){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -80,6 +71,7 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(createPendingIntent(encrypted, useBiometric, signature))
                 .setAutoCancel(true);
+        //notification channel opening is a must in new API's
         createNotificationChannel();
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -88,6 +80,14 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
         notificationManager.notify(notification_id++, builder.build());
     }
 
+    /**
+     * Create the pending intent for opening the notification.
+     * It holds the data the the app needs for the logic.
+     * @param encrypted encrypted text
+     * @param encrypted encrypted text
+     * @param useBiometric should use biometric when opening the push notification
+     * @return PendingIntent for the activity
+     */
     private PendingIntent createPendingIntent(String encrypted, String useBiometric, String signature){
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -98,6 +98,9 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
     }
 
 
+    /**
+     * Opening a notification channel in order to show the notification
+     */
     private void createNotificationChannel() {
             CharSequence name = getString(R.string.channel_name);
             String description = getString(R.string.channel_description);
@@ -109,32 +112,4 @@ public class FirebaseMessagingServiceImpl extends FirebaseMessagingService {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
     }
-
-    /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
-     */
-    @Override
-    public void onNewToken(String token) {
-        Log.d(TAG, "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        sendRegistrationToServer(token);
-    }
-
-    /**
-     * Persist token to third-party servers.
-     *
-     * Modify this method to associate the user's FCM InstanceID token with any server-side account
-     * maintained by your application.
-     *
-     * @param token The new token.
-     */
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
-    }
-
 }

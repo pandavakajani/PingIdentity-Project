@@ -13,17 +13,23 @@ import com.example.encryptmystrings.R;
 import com.example.encryptmystrings.biometric.BiometricHelper;
 import com.example.encryptmystrings.databinding.DecrypedLayoutBindingImpl;
 
+/**
+ * Simple fragment to show the decrypted string.
+ * It uses biometric authentication when needed.
+ * It initiates the decryption and verifying of the decrypted string.
+ * Binds data from {@link MainModel} to {@link com.example.encryptmystrings.R.layout#decryped_layout} using {@link MainModelView}
+ */
 public class DecryptedFragment extends Fragment implements BiometricHelper.BiometricAuthenticationResponseListener{
     MainModelView modelView;
 
     @Override
     public void onResume() {
         super.onResume();
-        boolean shouldUseBiometric = modelView.getToggleEncryption().getValue();
+        boolean shouldUseBiometric = modelView.getToggleEncryption().getValue();//flag for biometric authentication
         if(shouldUseBiometric) {
-            goThroughBiometric();
+            goThroughBiometric();//open biometric dialog
         }else{
-            authenticationResolutionSuccess();
+            authenticationResolutionSuccess();//go directly to decrypting and verifying
         }
     }
 
@@ -42,6 +48,9 @@ public class DecryptedFragment extends Fragment implements BiometricHelper.Biome
         return binding.getRoot();
     }
 
+    /**
+     * Opens up a biometric dialog
+     */
     private void goThroughBiometric(){
         if(BiometricHelper.canUseBiometricAuthentication(getContext())){
             Handler handler = new Handler();
@@ -55,7 +64,9 @@ public class DecryptedFragment extends Fragment implements BiometricHelper.Biome
         }
     }
 
-    //callback from biometric dialog to enable the view and decrypt text
+    /**
+     * Callback from biometric dialog to enable the view and decrypt text
+     */
     @Override
     public void authenticationResolutionSuccess() {
         //decrypt and show field

@@ -24,4 +24,5 @@
     <string name="decryption_process_failed">Decryption process failed</string>
     <string name="text_decrypted">Text decrypted</string>
     <string name="text_verified">text_verified</string>
+    <string name="encryption_process_failed">encryption process failed</string>
 </resources>

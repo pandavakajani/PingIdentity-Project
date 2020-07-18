@@ -16,11 +16,26 @@ import com.example.encryptmystrings.R;
 
 import java.util.concurrent.Executor;
 
+
+/**
+ * This class is a simple biometric helper that encapsulate some of the biometric abilities
+ * provided by the OS.
+ * it provides the ability to verify the biometric authentication with minimum code in the app
+ */
 public class BiometricHelper {
+    /**
+     * Interface to communicate back with the caller after the work is done
+     */
     public interface BiometricAuthenticationResponseListener{
         void authenticationResolutionSuccess();
     }
 
+    /**
+     *
+     * @param ctx - Context that allows us to "talk" to the ui
+     * @return - 'true' if authentication succeeded.
+     *           'false' if from some reason it failed
+     */
     public static boolean canUseBiometricAuthentication(Context ctx){
         BiometricManager biometricManager = BiometricManager.from(ctx);
         boolean canAuthenticate = false;
@@ -42,6 +57,12 @@ public class BiometricHelper {
         return canAuthenticate;
     }
 
+    /**
+     * Shows a biometric prompt to the user
+     * @param ctx  - Context that allows us to "talk" to the ui
+     * @param activity - needed for the biometric prompt
+     * @param listener - communicate back with the caller
+     */
     public static void showBiometricPrompt(final Context ctx, FragmentActivity activity, final BiometricAuthenticationResponseListener listener){
         Executor executor;
         BiometricPrompt biometricPrompt;
