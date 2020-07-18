@@ -48,7 +48,8 @@ public class MainModelView extends AndroidViewModel implements EncryptionManager
     public void init(){
         //init model if needed
         if(model == null){
-            model = new MainModel();
+            model = MainModel.getInstance();
+
         }
         //init the live data if not done already
         if(toggleEncryption == null){

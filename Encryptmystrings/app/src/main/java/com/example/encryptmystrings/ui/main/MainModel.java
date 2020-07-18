@@ -41,6 +41,16 @@ public class MainModel {
         return registerPushMessage;
     }
 
+    //singleton pattern
+    private MainModel(){}
+    private static MainModel instance;
+    public static MainModel getInstance(){
+        if(instance == null){
+            instance = new MainModel();
+        }
+        return instance;
+    }
+
     public void setToggleEncryption(Boolean toggleEncryption) {
         this.toggleEncryption.setValue(toggleEncryption);
     }
